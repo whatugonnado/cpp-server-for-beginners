@@ -72,14 +72,16 @@ int Server::InitServer() {
 }
 
 void Server::Listening() {
-	while (_clientSock = accept(_sock, (SOCKADDR*)&_clientInfo, &_clientSize)) {
+	while (true) {
+		acceptMutex.lock();
+		_clientSock = accept(_sock, (SOCKADDR*)&_clientInfo, &_clientSize);
 		if (_clientSock == INVALID_SOCKET) {
 			std::lock_guard<std::mutex> ioLock(ioMutex);
 			std::cerr << "Invalid client socket" << GetLastError() << std::endl;
+			acceptMutex.unlock();
 			continue;
 		}
 		else {
-			acceptMutex.lock();
 			std::thread t1 = runThread();
 			t1.detach();
 		}
@@ -91,12 +93,12 @@ void Server::FunctionForClient(void* data) {
 	SOCKET CLI = *cl;
 	acceptMutex.unlock();
 
-	ConnectSQL SQL(data);
+	ConnectSQL SQL;
 	SQL.connectMYSQL();
 	
 	{
 		std::lock_guard<std::mutex> ioLock(ioMutex);
-		std::cerr << "Client Added\n";
+		std::cout << "Client Added\n";
 	}
 
 

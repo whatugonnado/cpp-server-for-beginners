@@ -14,7 +14,7 @@ class ConnectSQL {
 	std::string _resultString;
 
 public:
-	ConnectSQL(void *data);
+	ConnectSQL();
 	~ConnectSQL();
 
 	int connectMYSQL();

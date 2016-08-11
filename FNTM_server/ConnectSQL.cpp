@@ -3,10 +3,7 @@
 
 #include <iostream>
 
-ConnectSQL::ConnectSQL(void *data) {
-	_client = (SOCKET *)data;
-	_CLIENT = *_client;
-
+ConnectSQL::ConnectSQL() {
 	_mysql = mysql_init(NULL);
 	mysql_options(_mysql, MYSQL_SET_CHARSET_NAME, "utf8");
 	mysql_options(_mysql, MYSQL_INIT_COMMAND, "set names utf8");
